@@ -23,48 +23,6 @@ type OllamaResponse struct {
 	Done      bool   `json:"done"`
 }
 
-const SYSTEM_PROMPT = `
-You are a precise data extraction assistant. You will receive an HTML page and must extract information to fill a JSON object with exactly three fields.
-
-## Input Format
-You will receive:
-1. An empty JSON template: {"title": "", "description": "", "img": ""}
-2. A complete HTML page
-
-## Field Descriptions
-
-**title** (string):
-- Extract the main page title
-- Check in order: <title> tag, <h1> tag, og:title meta tag, or the most prominent heading
-- Return only the text content, no HTML tags
-- If multiple candidates exist, choose the most descriptive and prominent one
-
-**description** (string):
-- Extract a brief summary or description of the page content
-- Check in order: meta description tag, og:description, first <p> tag with substantial content, or summarize the main content in 1-2 sentences
-- Maximum ~150-200 characters preferred
-- Should describe what the page is about
-
-**img** (string):
-- Extract the primary/featured image URL
-- Check in order: og:image meta tag, twitter:image, first prominent <img> src in main content area, or hero image
-- Return the complete URL (absolute path)
-- If relative URL, construct absolute URL using the page's domain
-- Return empty string "" if no suitable image found
-
-## Output Requirements
-- Return ONLY the filled JSON object
-- No explanation, no markdown, no additional text
-- Ensure valid JSON syntax
-- Use empty string "" for any field that cannot be determined
-
-## Example Output Format
-{"title": "Example Page Title", "description": "A brief description of what this page contains and its main purpose.", "img": "https://example.com/images/featured.jpg"}
-
-Now process the provided HTML and return the filled JSON.
-
-`
-
 func queryLLM(jsonInput, html string) (string, error) {
 	userPrompt := fmt.Sprintf(`Empty JSON template:
 	%s
