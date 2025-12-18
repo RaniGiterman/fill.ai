@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+    <title>Rani Fill</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>AI Fill</h1>
+    <button id="magicBtn">קסם✨</button>
+
+    <div class="modal-overlay" id="modalOverlay">
+      <div class="modal">
+        <button class="close-btn" id="closeBtn">&times;</button>
+        <h2>הכנס קישור</h2>
+        <form id="fillForm">
+          <label for="url">קישור:</label>
+          <input type="text" id="url" name="url" dir="ltr" value="https://www.benda.co.il/product/36208-498-32/" required>
+          
+          <button type="submit" id="submitURL">שליחה</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- <form id="fillForm"> -->
+    <!--   <label for="url">URL:</label> -->
+    <!--   <input type="text" id="url" name="url" value="https://www.benda.co.il/product/36208-498-32/" required> -->
+    <!---->
+    <!--   <button type="submit" id="submitURL">Submit</button> -->
+    <!-- </form> -->
+    
+    <div id="error"></div>
+    
+    <label for="title">כותרת:</label>
+    <input type="text" id="title" name="title">
+    
+    <label for="description">תיאור:</label>
+    <!-- <input type="text" id="description" name="description"> -->
+    <textarea type="text" id="description" name="description"></textarea>
+    
+    <label for="img">תמונות:</label>
+    <img id="img1" name="img1" src="" alt="Image 1">
+    <img id="img2" name="img2" src="" alt="Image 2">
+    <img id="img3" name="img3" src="" alt="Image 3">
+    <img id="img4" name="img4" src="" alt="Image 4">
+    
+    <script src="script.js"></script>
+</body>
+</html>

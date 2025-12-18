@@ -1,71 +1,26 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"log"
+	"net/http"
 
-	"github.com/openai/openai-go/v3"
+	"fill.ai/controller"
 )
 
-type Object struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	IMG         string `json:"img"`
-}
-
-const SYSTEM_PROMPT = `
-You are a precise data extraction assistant. You will receive an HTML page that decribes a consumer product with details and must extract information to fill a JSON object with exactly three fields.
-
-## Input Format
-You will receive:
-1. An empty JSON template: {"title": "", "description": "", "img": ""}
-2. A complete HTML page
-
-## Field Descriptions
-
-*title* (string):
-- Extract the product title
-- Return only the text content, no HTML tags
-- If multiple candidates exist, choose the most descriptive and prominent one
-
-*description* (string):
-- Extract product description from the page content
-
-*img* (string):
-- Extract the product image. if more than one, then concat them all with comma
-
-## Output Requirements
-- Return ONLY the filled JSON object
-- Ensure valid JSON syntax
-- Use empty string "" for any field that cannot be determined
-
-Now process the provided HTML and return the filled JSON.
-`
-
-const URL = "https://www.benda.co.il/product/36208-498-32/"
+// const URL = "https://www.benda.co.il/product/36208-498-32/"
+// const URL = "https://bconnect.co.il/product/%d7%9e%d7%98%d7%a2%d7%9f-%d7%9e%d7%94%d7%99%d7%a8-%d7%a0%d7%99%d7%99%d7%93-%d7%9c-boost%e2%86%91charge-pro-apple-watch/"
 
 func main() {
-	fmt.Println("Starting!")
-	fmt.Println("Querying HTML...")
-	html, err := queryHTML(URL)
-	if err != nil {
-		log.Fatalf("error querying page: %v", err)
+	fs := http.FileServer(http.Dir("static"))
+	http.Handle("/static/", http.StripPrefix("/static/", fs))
+
+	// serve static files
+	http.HandleFunc("/fill", controller.Fill)
+
+	fmt.Println("Server starting on :8080...")
+	// Listen and serve on port 8080
+	if err := http.ListenAndServe(":8080", nil); err != nil {
+		log.Fatalf("Server failed: %v", err)
 	}
-
-	fmt.Println("Queried HTML successfully!")
-
-	// defaults to os.LookupEnv("OPENAI_API_KEY")
-	client := openai.NewClient()
-
-	ctx := context.Background()
-
-	fmt.Println("Querying LLM...")
-	res, err := queryGPT(ctx, client, SYSTEM_PROMPT, html)
-	if err != nil {
-		log.Fatalf("error querying LLM: %v", err)
-	}
-	fmt.Println("Queried LLM successfully!")
-
-	fmt.Println(res)
 }
