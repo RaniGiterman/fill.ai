@@ -16,7 +16,19 @@ kubeseal -f mysecret.json -w mysealedsecret.json
 kubectl create -f mysealedsecret.json
 
 kubectl get secret mysecret
+```
+
+### Run the app
+```sh
+git clone https://github.com/RaniGiterman/fill.ai.git
+
+cd manifests
+
+kubectl apply -f .
 
 kubectl port-forward service/fill-ai-service 8080:8080
 ```
-
+Or run locally with:
+```sh
+export OPENAI_API_KEY=xxx; go run .
+```
