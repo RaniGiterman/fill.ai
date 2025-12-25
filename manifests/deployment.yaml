@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fill-ai-deployment
+  labels:
+    app: fill-ai
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: fill-ai
+  template:
+    metadata:
+      labels:
+        app: fill-ai
+    spec:
+      containers:
+      - name: fill-ai
+        image: filler:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080 
+        env:
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: mysecret
+              key: key
+
