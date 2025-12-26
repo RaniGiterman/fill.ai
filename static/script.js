@@ -22,21 +22,26 @@ document.getElementById('fillForm').addEventListener('submit', async function(e)
         }
         
         const data = await response.json();
-        console.log(data)
         if (data.status == "fail") {
           return
         }
         
         const msg = JSON.parse(data.msg);
+        console.log(msg)
         // Fill in the response fields
         document.getElementById('title').value = msg.title || '';
         document.getElementById('description').value = msg.description || '';
 
-        // fill images. max of 4 images.
-        let parts = msg.img.split(",")
-        for (let i = 1; i < parts.length && i <= 4; i++) {
-          console.log('img'+i, document.getElementById('img'+i))
-          document.getElementById('img'+i).src = parts[i-1]
+        console.log(msg.img, msg.img.includes(","))
+        if (!msg.img.includes(",")) document.getElementById('img1').src = msg.img
+        else {
+          // fill images. max of 4 images.
+          let parts = msg.img.split(",")
+          for (let i = 1; i < parts.length && i <= 4; i++) {
+            console.log("id:", "img"+i, "src:", parts[i-1])
+            console.log('img'+i, document.getElementById('img'+i))
+            document.getElementById('img'+i).src = parts[i-1]
+          }
         }
         
     } catch (error) {

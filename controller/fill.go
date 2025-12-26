@@ -61,7 +61,7 @@ func Fill(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 
 	fmt.Println("Querying LLM...")
-	res, err := U.QueryGPT(ctx, client, html)
+	res, err := U.QueryGPT(ctx, client, html, body.URL)
 	if err != nil {
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)

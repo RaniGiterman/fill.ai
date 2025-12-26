@@ -13,12 +13,13 @@ import (
 )
 
 const SYSTEM_PROMPT = `
-You are a precise data extraction assistant. You will receive an HTML page that decribes a consumer product with details and must extract information to fill a JSON object with exactly three fields.
+You are a precise data extraction assistant. You will receive an HTML page that describes a consumer product with details and must extract information to fill a JSON object with exactly three fields.
 
 ## Input Format
 You will receive:
 1. An empty JSON template: {"title": "", "description": "", "img": ""}
-2. A complete HTML page
+2. A base URL for the website
+3. A complete HTML page
 
 ## Field Descriptions
 
@@ -32,6 +33,8 @@ You will receive:
 
 *img* (string):
 - Extract the product image. if more than one, then concat them all with comma
+- If image URL is relative (starts with / or does not include http/https), prepend the base URL to create absolute URL
+- Example: if base URL is "https://example.com" and img is "/images/product.png", return "https://example.com/images/product.png"
 
 ## Output Requirements
 - Return ONLY the filled JSON object
@@ -42,10 +45,11 @@ Now process the provided HTML and return the filled JSON.
 `
 
 // Run HTML against openai model
-func QueryGPT(ctx context.Context, client openai.Client, html string) (string, error) {
+func QueryGPT(ctx context.Context, client openai.Client, html, url string) (string, error) {
 	params := openai.ChatCompletionNewParams{
 		Messages: []openai.ChatCompletionMessageParamUnion{
 			openai.UserMessage(SYSTEM_PROMPT),
+			openai.UserMessage(url),
 			openai.UserMessage(html),
 		},
 		Seed:            openai.Int(0),
